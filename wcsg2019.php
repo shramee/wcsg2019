@@ -4,7 +4,7 @@
  * Plugin URI: http://shramee.me/
  * Description: Quick blocks for Gutenberg with Caxton
  * Author: Shramee
- * Version: 1.10.0
+ * Version: 1.0.0
  * Author URI: http://shramee.me/
  */
 
@@ -34,11 +34,6 @@ class Gutenberg_Blocks_In_25_Minutes {
 	 * Gutenberg_Blocks_In_25_Minutes constructor.
 	 */
 	protected function __construct() {
-		self::$file    = __FILE__;
-		self::$url     = plugin_dir_url( __FILE__ );
-		self::$path    = plugin_dir_path( __FILE__ );
-		self::$version = '1.3.1';
-
 		add_action( 'init', [ $this, 'init' ] );
 	}
 
@@ -47,12 +42,11 @@ class Gutenberg_Blocks_In_25_Minutes {
 	 * @action init
 	 */
 	public function init() {
-
 		if ( ! class_exists( 'Caxton' ) ) {
 			// Caxton not installed
 			add_action( 'admin_notices', array( $this, 'caxton_required_notice' ) );
 		} else {
-			add_action( 'enqueue_block_editor_assets', array( $this, 'editor_enqueue' ), 7 );
+			add_action( 'enqueue_block_editor_assets', array( $this, 'editor_enqueue' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
 			// All clear! Initiate hooks
 		}
@@ -63,6 +57,9 @@ class Gutenberg_Blocks_In_25_Minutes {
 	 * @action enqueue_block_editor_assets
 	 */
 	public function editor_enqueue() {
+		$url = plugin_dir_url( __FILE__ );
+		wp_enqueue_style( "gbb25m-front", "$url/assets/styles.css" );
+		wp_enqueue_script( "gbb25m-admin", "$url/assets/blocks.js", array( 'caxton' ) );
 	}
 
 	/**
@@ -70,6 +67,8 @@ class Gutenberg_Blocks_In_25_Minutes {
 	 * @action wp_enqueue_scripts
 	 */
 	public function enqueue() {
+		$url = plugin_dir_url( __FILE__ );
+		wp_enqueue_style( "gbb25m-front", "$url/assets/styles.css" );
 	}
 
 	/**
@@ -97,3 +96,5 @@ class Gutenberg_Blocks_In_25_Minutes {
 			'</div>';
 	}
 }
+
+Gutenberg_Blocks_In_25_Minutes::instance();
